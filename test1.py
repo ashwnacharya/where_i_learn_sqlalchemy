@@ -8,30 +8,16 @@ engine.connect()
 
 metadata = MetaData(engine)
 
-user_table = Table('user', metadata,
+user_table = Table('user', metadata, 
     Column('id', Integer(), primary_key=True),
     Column('name', String(200), nullable=False),
 )
-
 
 class User:
 
     def __init__(self, *args, **kwargs):
         pass
 
-
-def receive_load(target, context):
-    print("listen for the 'load' event")
-    print(target)
-    print(context)
-
-
-def receive_refresh(target, context, only_load_props=None):
-    print("listen for the 'refresh' event")
-
-
-event.listen(User, 'load', receive_load)
-event.listen(User, "refresh", receive_load)
 
 Base = declarative_base()
 
@@ -43,8 +29,6 @@ metadata.create_all()
 
 session_factory = scoped_session(sessionmaker(engine),)
 
-session_factory.remove()
-
 session = session_factory()
 
 user = User()
@@ -54,11 +38,3 @@ user.name = 'ashwin'
 session.add(user)
 session.flush()
 session.commit()
-
-session_factory = scoped_session(sessionmaker(engine),)
-
-new_session = session_factory()
-
-# Event should fire here when I run this line
-obj = new_session.query(User).filter_by(id=1).first()
-drop_database(engine.url)

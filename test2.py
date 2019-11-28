@@ -8,7 +8,9 @@ engine.connect()
 
 metadata = MetaData(engine)
 
-user_table = Table('user', metadata,
+user_table = Table(
+    'user', 
+    metadata,
     Column('id', Integer(), primary_key=True),
     Column('name', String(200), nullable=False),
 )
@@ -25,7 +27,6 @@ def receive_load(target, context):
     print(target)
     print(context)
 
-
 def receive_refresh(target, context, only_load_props=None):
     print("listen for the 'refresh' event")
 
@@ -37,23 +38,6 @@ Base = declarative_base()
 
 mapper(User, user_table)
 
-
-create_database(engine.url)
-metadata.create_all()
-
-session_factory = scoped_session(sessionmaker(engine),)
-
-session_factory.remove()
-
-session = session_factory()
-
-user = User()
-user.id = 1
-user.name = 'ashwin'
-
-session.add(user)
-session.flush()
-session.commit()
 
 session_factory = scoped_session(sessionmaker(engine),)
 
